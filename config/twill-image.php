@@ -49,15 +49,10 @@ return [
     'inline_styles' => [
         'main' => [
             'background-color' => '#e3e3e3',
-            'bottom' => 0,
             'height' => '100%',
-            'left' => 0,
             'margin' => 0,
             'max-width' => 'none',
             'padding' => 0,
-            'position' => 'absolute',
-            'right' => 0,
-            'top' => 0,
             'width' => '100%',
             'object-fit' => 'cover',
             'object-position' => 'center',
@@ -66,20 +61,21 @@ return [
             'position' => 'relative',
             'overflow' => 'hidden',
         ],
-        'placeholder' => [],
+        'placeholder' => [
+            'position' => 'absolute',
+            'top' => 0,
+            'right' => 0,
+            'bottom' => 0,
+            'left' => 0,
+        ],
     ],
 
     'classes' => [
         'main' => [
-            'bottom-0',
             'h-full',
-            'left-0',
             'm-0',
             'max-w-none',
             'p-0',
-            'absolute',
-            'right-0',
-            'top-0',
             'w-full',
             'object-cover',
             'object-center'
@@ -88,7 +84,10 @@ return [
             'relative',
             'overflow-hidden',
         ],
-        'placeholder' => [],
+        'placeholder' => [
+            'absolute',
+            'inset-0',
+        ],
     ],
 
     /*

@@ -156,9 +156,7 @@ class ImageViewModel extends ViewModel implements Arrayable
             = $overrides['imageStyles']
             ?? [];
 
-        $this->imageClass
-            = $overrides['imageClass']
-            ?? '';
+        $this->imageClass = $overrides['imageClass'] ?? $overrides['class'] ?? '';
     }
 
     /**

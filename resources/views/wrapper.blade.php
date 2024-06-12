@@ -6,7 +6,7 @@ $needPlaceholder = $needPlaceholder ?? false;
 @if($needSizer || $needPlaceholder)
 <div
     class="{{$wrapperClasses}}"
-    style="aspect-ratio: 100/{{number_format((float) ($aspectRatio) * 100, 2, '.', '')}}"
+    style="{{$wrapperStyles}}"
     data-twill-image-wrapper
 >
 @endif

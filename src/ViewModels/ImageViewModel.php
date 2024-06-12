@@ -321,9 +321,15 @@ class ImageViewModel extends ViewModel implements Arrayable
         $placeholderClasses = $this->styleService->placeholder()['class'];
         $wrapperStyles = $this->styleService->wrapper()['style'];
 
+        // needSizer or needPlaceholder : Append aspect ratio CSS rule to wrapper style
+        $aspectRatio = $this->data['image']['aspectRatio'];
+        $sep = '; ';
+        $aspectRatioStyle = 'aspect-ratio: 100/' .number_format((float) ($aspectRatio) * 100, 2, '.', '');
+        $wrapperStyles = !empty($wrapperStyles) ? $wrapperStyles . $sep . $aspectRatioStyle . $sep : $aspectRatioStyle . $sep;
+
         return array_filter([
             'alt' => $this->alt,
-            'aspectRatio' => $this->data['image']['aspectRatio'],
+            'aspectRatio' => $aspectRatio,
             'height' => $this->height,
             'loading' => $this->loading,
             'mainStyle' => $mainStyles ?? null,
@@ -339,7 +345,7 @@ class ImageViewModel extends ViewModel implements Arrayable
             'sizes' => $this->sizes,
             'width' => $this->width,
             'wrapperClasses' => $this->wrapperClasses(),
-            'wrapperStyle' => $wrapperStyles ?? null,
+            'wrapperStyles' => $wrapperStyles ?? null,
         ]);
     }
 }

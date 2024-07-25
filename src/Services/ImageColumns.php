@@ -149,7 +149,9 @@ class ImageColumns implements ImageColumnsInterface
             if (strrpos($size, 'px') > 0 || strrpos($size, 'vw') > 0 || strrpos($size, 'em') > 0) {
                 $sizeAttr = $size;
             } elseif ($mainColWidth[0] !== 'auto') {
-                $width = round(((($mainColWidth[0] - ($columns - 1) * $innerGutter[0]) / $columns) * $size) + ($size - 1) * $innerGutter[0]);
+                // Must follow container calculation https://github.com/area17/tailwind-plugins/blob/main/src/Container/index.js
+                $container = $mainColWidth[0] - (2 * $outerGutter[0]);
+                $width = round(((($container - ($columns - 1) * $innerGutter[0]) / $columns) * $size) + ($size - 1) * $innerGutter[0]);
                 $sizeAttr = $width . $mainColWidth[1];
             } else {
                 $gutterOffset = ((($columns - 1) * $innerGutter[0]) + (2 * $outerGutter[0])) . $innerGutter[1];

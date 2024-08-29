@@ -298,7 +298,7 @@ class MediaSource implements Arrayable
         return pathinfo($this->media()->filename, PATHINFO_EXTENSION);
     }
 
-    public function ratio(): string
+    public function ratio(): ?string
     {
         return $this->media()->pivot->ratio;
     }

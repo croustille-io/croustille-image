@@ -5,29 +5,30 @@ namespace A17\Twill\Image;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\Model;
-use A17\Twill\Image\Models\Image;
+use A17\Twill\Image\Models\Image as TwillImageModel;
 use A17\Twill\Image\Models\StaticImage;
 use A17\Twill\Image\ViewModels\ImageViewModel;
+use Illuminate\View\View;
 
 class TwillImage
 {
     /**
      * @param object|Model|Block $object
      * @param string $role
-     * @param null|Media $media
-     * @return Image
+     * @param Media|null $media
+     * @return TwillImageModel
      */
-    public function make($object, $role, $media = null)
+    public function make($object, string $role, Media $media = null): TwillImageModel
     {
-        return new Image($object, $role, $media);
+        return new TwillImageModel($object, $role, $media);
     }
 
     /**
-     * @param Image|array $data
+     * @param TwillImageModel|array $data
      * @param array $overrides
-     * @return string
+     * @return View
      */
-    public function render($data, $overrides = [])
+    public function render($data, array $overrides = []): View
     {
         $viewModel = new ImageViewModel($data, $overrides);
 

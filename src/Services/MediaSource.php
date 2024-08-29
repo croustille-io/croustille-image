@@ -42,11 +42,11 @@ class MediaSource implements Arrayable
      *
      * @param Model|Block|object $object
      * @param string $role
-     * @param array $args
      * @param Media|object|null $media
-     * @param ImageServiceInterface|string $service
+     * @param null $service
+     * @throws ImageException
      */
-    public function __construct($object, $role, $media = null, $service = null)
+    public function __construct($object, string $role, $media = null, $service = null)
     {
         $this->setModel($object);
 
@@ -55,7 +55,10 @@ class MediaSource implements Arrayable
         $this->service = $this->setService($service);
     }
 
-    public function generate($crop = null, $width = null, $height = null, $srcSetWidths = [])
+    /**
+     * @throws ImageException
+     */
+    public function generate($crop = null, $width = null, $height = null, $srcSetWidths = []): MediaSource
     {
         $this->setCrop($crop);
         $this->setImageArray();
@@ -67,6 +70,9 @@ class MediaSource implements Arrayable
         return $this;
     }
 
+    /**
+     * @throws ImageException
+     */
     protected function setModel($object)
     {
         if (!classHasTrait($object, 'A17\Twill\Models\Behaviors\HasMedias')) {
@@ -91,10 +97,11 @@ class MediaSource implements Arrayable
      *
      * @param null|string $crop
      * @return void
+     * @throws ImageException
      */
-    protected function setCrop($crop)
+    protected function setCrop(?string $crop)
     {
-        if (isset($crop) && is_string($crop)) {
+        if (isset($crop)) {
             $this->crop = $crop;
             return;
         }
@@ -131,6 +138,9 @@ class MediaSource implements Arrayable
         $this->height = $height ?? null;
     }
 
+    /**
+     * @throws ImageException
+     */
     protected function setImageArray()
     {
         $width = $this->media()->pivot->crop_w ?? $this->media()->width ?? null;
@@ -211,17 +221,17 @@ class MediaSource implements Arrayable
             $this->service->getTransparentFallbackUrl();
     }
 
-    public function srcSet()
+    public function srcSet(): string
     {
         return $this->getSrcset();
     }
 
-    public function srcSetWebp()
+    public function srcSetWebp(): string
     {
         return $this->getSrcSet(self::FORMAT_WEBP);
     }
 
-    protected function getSrcSet($format = null)
+    protected function getSrcSet($format = null): string
     {
         $range = !empty($this->srcSetWidths) ? collect($this->srcSetWidths) : collect($this->widthRange());
 
@@ -240,7 +250,7 @@ class MediaSource implements Arrayable
             ->join(', ');
     }
 
-    protected function widthRange()
+    protected function widthRange(): array
     {
         $baseWidth = $this->width;
 
@@ -260,9 +270,9 @@ class MediaSource implements Arrayable
         return $this->width;
     }
 
-    public function height()
+    public function height(): int
     {
-        return isset($this->height) ? $this->height : $this->calcHeightFromWidth($this->width);
+        return $this->height ?? $this->calcHeightFromWidth($this->width);
     }
 
     public function aspectRatio(): string
@@ -308,7 +318,7 @@ class MediaSource implements Arrayable
         return $this->media ?? $this->model->imageObject($this->role, $this->crop);
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_merge([
             "alt" => $this->alt(),
@@ -331,7 +341,10 @@ class MediaSource implements Arrayable
     /**
      * Build crops list
      *
+     * @param $model
+     * @param $role
      * @return array
+     * @throws ImageException
      */
     protected function getAllCrops($model, $role): array
     {

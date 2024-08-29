@@ -125,7 +125,7 @@ class ImageViewModel extends ViewModel implements Arrayable
      * @param array $overrides
      * @return void
      */
-    protected function setAttributes($overrides)
+    protected function setAttributes(array $overrides)
     {
         $this->lqip
             = $overrides['lqip']
@@ -235,7 +235,7 @@ class ImageViewModel extends ViewModel implements Arrayable
         ]);
     }
 
-    protected function mimeType($extension)
+    protected function mimeType(string $extension): ?string
     {
         $ext = strtolower($extension);
 
@@ -261,7 +261,7 @@ class ImageViewModel extends ViewModel implements Arrayable
         return null;
     }
 
-    protected function wrapperClasses()
+    protected function wrapperClasses(): string
     {
         $classes = 'twill-image-wrapper';
 
@@ -269,9 +269,7 @@ class ImageViewModel extends ViewModel implements Arrayable
             $classes = join(' ', [$classes, $this->wrapperClass]);
         }
 
-        $classes = join(' ', [$classes, $this->styleService->wrapper()['class']]);
-
-        return $classes;
+        return join(' ', [$classes, $this->styleService->wrapper()['class']]);
     }
 
     /**

@@ -68,7 +68,7 @@ class Image implements Arrayable
      * @param string $role
      * @param null|Media $media
      */
-    public function __construct($object, $role, $media = null)
+    public function __construct($object, string $role, ?Media $media = null)
     {
         $this->object = $object;
 
@@ -86,16 +86,14 @@ class Image implements Arrayable
     /**
      * @return MediaSource
      */
-    private function mediaSourceService()
+    private function mediaSourceService(): MediaSource
     {
-        return isset($this->mediaSourceService)
-            ? $this->mediaSourceService
-            : $this->mediaSourceService = new MediaSource(
-                $this->object,
-                $this->role,
-                $this->media,
-                $this->service,
-            );
+        return $this->mediaSourceService ?? $this->mediaSourceService = new MediaSource(
+            $this->object,
+            $this->role,
+            $this->media,
+            $this->service,
+        );
     }
 
     /**
@@ -103,8 +101,9 @@ class Image implements Arrayable
      *
      * @param array|string $preset
      * @return $this
+     * @throws ImageException
      */
-    public function preset($preset)
+    public function preset($preset): Image
     {
         if (is_array($preset)) {
             $this->applyPreset($preset);
@@ -139,9 +138,8 @@ class Image implements Arrayable
      * Set the list of srcset width to generate
      *
      * @param int[] $widths
-     * @return $this
      */
-    public function srcSetWidths($widths)
+    public function srcSetWidths(array $widths)
     {
         $this->srcSetWidths = $widths;
     }
@@ -152,7 +150,7 @@ class Image implements Arrayable
      * @param string $crop
      * @return $this
      */
-    public function crop($crop)
+    public function crop($crop): Image
     {
         $this->crop = $crop;
 
@@ -165,7 +163,7 @@ class Image implements Arrayable
      * @param int $width
      * @return $this
      */
-    public function width($width)
+    public function width(int $width): Image
     {
         $this->width = $width;
 
@@ -178,7 +176,7 @@ class Image implements Arrayable
      * @param int $height
      * @return $this
      */
-    public function height($height)
+    public function height(int $height): Image
     {
         $this->height = $height;
 
@@ -191,7 +189,7 @@ class Image implements Arrayable
      * @param string $sizes
      * @return $this
      */
-    public function sizes($sizes)
+    public function sizes(string $sizes): Image
     {
         $this->sizes = $sizes;
 
@@ -204,7 +202,7 @@ class Image implements Arrayable
      * @param array $sources
      * @return $this
      */
-    public function sources($sources = [])
+    public function sources(array $sources = []): Image
     {
         $this->sources = $sources;
 
@@ -218,7 +216,7 @@ class Image implements Arrayable
      * @param array $service
      * @return $this
      */
-    public function service($service)
+    public function service(array $service): Image
     {
         $this->service = $service;
 
@@ -228,10 +226,9 @@ class Image implements Arrayable
     /**
      * Set alternative sources for the media.
      *
-     * @param array $sources
-     * @return $this
+     * @throws ImageException
      */
-    public function generateSources()
+    public function generateSources(): array
     {
         $sources = [];
 
@@ -270,7 +267,10 @@ class Image implements Arrayable
         return TwillImage::render($this, $overrides);
     }
 
-    public function toArray()
+    /**
+     * @throws ImageException
+     */
+    public function toArray(): array
     {
         $arr = [
             "image" => $this->mediaSourceService()->generate(

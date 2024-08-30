@@ -5,6 +5,7 @@ namespace A17\Twill\Image\Services;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\Model;
+use A17\Twill\Services\MediaLibrary\ImageService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Contracts\Support\Arrayable;
@@ -36,6 +37,10 @@ class MediaSource implements Arrayable
     protected $height;
 
     protected $imageArray;
+    /**
+     * @var ImageServiceInterface|string
+     */
+    private $service;
 
     /**
      * Create an instance of the service
@@ -43,7 +48,7 @@ class MediaSource implements Arrayable
      * @param Model|Block|object $object
      * @param string $role
      * @param Media|object|null $media
-     * @param null $service
+     * @param ImageService|string|null $service
      * @throws ImageException
      */
     public function __construct($object, string $role, $media = null, $service = null)
@@ -75,6 +80,7 @@ class MediaSource implements Arrayable
      */
     protected function setModel($object)
     {
+        /* @phpstan-ignore-next-line */
         if (!classHasTrait($object, 'A17\Twill\Models\Behaviors\HasMedias')) {
             throw new ImageException('Object must use HasMedias trait', 1);
         }
@@ -275,7 +281,7 @@ class MediaSource implements Arrayable
         return $this->height ?? $this->calcHeightFromWidth($this->width);
     }
 
-    public function aspectRatio(): string
+    public function aspectRatio(): float
     {
         $width = $this->width;
 

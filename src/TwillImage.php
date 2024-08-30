@@ -6,9 +6,8 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\Model;
 use A17\Twill\Image\Models\Image as TwillImageModel;
-use A17\Twill\Image\Models\StaticImage;
 use A17\Twill\Image\ViewModels\ImageViewModel;
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 
 class TwillImage
 {

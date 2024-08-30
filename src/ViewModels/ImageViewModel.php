@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Image\ViewModels;
 
+use A17\Twill\Image\Exceptions\ImageException;
 use Spatie\ViewModels\ViewModel;
 use A17\Twill\Image\Models\Image;
 use A17\Twill\Image\Services\ImageStyles;
@@ -21,7 +22,7 @@ class ImageViewModel extends ViewModel implements Arrayable
     protected $data;
 
     /**
-     * @var int $height Height of the image
+     * @var int|null $height Height of the image
      */
     protected $height;
 
@@ -46,7 +47,7 @@ class ImageViewModel extends ViewModel implements Arrayable
     protected $lqipSources;
 
     /**
-     * @var string $lqipSrc Default LQIP image source url
+     * @var ?string $lqipSrc Default LQIP image source url
      */
     protected $lqipSrc;
 
@@ -66,17 +67,17 @@ class ImageViewModel extends ViewModel implements Arrayable
     protected $src;
 
     /**
-     * @var int $width Width of the image
+     * @var int|null $width Width of the image
      */
     protected $width;
 
     /**
-     * @var int $imageClass Tailwind CSS class applied to the placeholder and main img tag
+     * @var mixed $imageClass Tailwind CSS class applied to the placeholder and main img tag
      */
     protected $imageClass;
 
     /**
-     * @var int $imageStyles Styles applied to the placeholder and main img tag
+     * @var mixed $imageStyles Styles applied to the placeholder and main img tag
      */
     protected $imageStyles;
 
@@ -86,15 +87,25 @@ class ImageViewModel extends ViewModel implements Arrayable
     protected $styleService;
 
     /**
-     * @var int $wrapperClass CSS class added to the wrapper element
+     * @var ?string $wrapperClass CSS class added to the wrapper element
      */
     protected $wrapperClass;
+
+    /**
+     * @var bool
+     */
+    protected $needPlaceholder;
+    /**
+     * @var bool
+     */
+    protected $needPlaceholderOrSizer;
 
     /**
      * ImageViewModel format an Image instance attributes to be passed to the image wrapper view.
      *
      * @param Image|array $data Image source
      * @param array $overrides Overrides frontend options
+     * @throws ImageException
      */
     public function __construct($data, $overrides = [])
     {
@@ -343,7 +354,7 @@ class ImageViewModel extends ViewModel implements Arrayable
             'sizes' => $this->sizes,
             'width' => $this->width,
             'wrapperClasses' => $this->wrapperClasses(),
-            'wrapperStyles' => $wrapperStyles ?? null,
+            'wrapperStyles' => $wrapperStyles,
         ]);
     }
 }

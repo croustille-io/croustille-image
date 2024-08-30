@@ -7,9 +7,12 @@ use A17\Twill\Models\Model;
 use A17\Twill\Image\Facades\TwillImage;
 use A17\Twill\Image\Services\MediaSource;
 use A17\Twill\Image\Services\ImageColumns;
+use A17\Twill\Services\MediaLibrary\ImageService;
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Support\Arrayable;
 use A17\Twill\Image\Exceptions\ImageException;
 use A17\Twill\Services\MediaLibrary\ImageServiceInterface;
+use Illuminate\Foundation\Application;
 
 class Image implements Arrayable
 {
@@ -59,9 +62,21 @@ class Image implements Arrayable
     protected $srcSetWidths = [];
 
     /**
-     * @var string|ImageServiceInterface ImageService instance or class name
+     * ImageService instance or class name
+     *
+     * @var string|ImageServiceInterface
      */
     protected $service;
+
+    /**
+     * @var ImageColumns|mixed
+     */
+    private $columnsService;
+
+    /**
+     * @var MediaSource|mixed
+     */
+    private $mediaSourceService;
 
     /**
      * @param object|Model $object
@@ -85,6 +100,7 @@ class Image implements Arrayable
 
     /**
      * @return MediaSource
+     * @throws ImageException
      */
     private function mediaSourceService(): MediaSource
     {
@@ -92,7 +108,7 @@ class Image implements Arrayable
             $this->object,
             $this->role,
             $this->media,
-            $this->service,
+            $this->service
         );
     }
 
@@ -213,10 +229,10 @@ class Image implements Arrayable
      * Set the ImageService to use instead of the one provided
      * by the service container
      *
-     * @param array $service
+     * @param string|ImageServiceInterface $service
      * @return $this
      */
-    public function service(array $service): Image
+    public function service($service): Image
     {
         $this->service = $service;
 
@@ -232,7 +248,7 @@ class Image implements Arrayable
     {
         $sources = [];
 
-        foreach ($this->sources ?? [] as $source) {
+        foreach ($this->sources as $source) {
             if (!isset($source['media_query']) && !isset($source['mediaQuery']) && !isset($source['columns'])) {
                 throw new ImageException("Media query is mandatory in sources.");
             }
@@ -249,7 +265,7 @@ class Image implements Arrayable
                     $source['crop'],
                     $source['width'] ?? null,
                     $source['height'] ?? null,
-                    $source['srcSetWidths'] ?? [],
+                    $source['srcSetWidths'] ?? []
                 )->toArray()
             ];
         }
@@ -264,6 +280,7 @@ class Image implements Arrayable
      */
     public function render($overrides = [])
     {
+        /* @phpstan-ignore-next-line */
         return TwillImage::render($this, $overrides);
     }
 

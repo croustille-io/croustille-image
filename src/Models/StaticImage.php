@@ -3,7 +3,7 @@
 namespace A17\Twill\Image\Models;
 
 use A17\Twill\Models\Model;
-use A17\Twill\Image\Models\Image;
+use A17\Twill\Image\Models\Image as TwillImageModel;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Image\Exceptions\ImageException;
 
@@ -13,12 +13,14 @@ class StaticImage extends Model
 
     protected $fillable = [];
 
-    public $mediasParams = [];
-
     public static $role = 'static-image';
 
-    public static function makeFromSrc($args)
+    /**
+     * @throws ImageException
+     */
+    public static function makeFromSrc($args): TwillImageModel
     {
+        /* @phpstan-ignore-next-line */
         $model = self::make();
 
         $role = self::$role;
@@ -39,7 +41,8 @@ class StaticImage extends Model
             'alt' => $args['alt'] ?? null,
         ]);
 
-        if (!empty($preset['sources']) && $sources = $preset['sources']) {
+        if (!empty($preset['sources'])) {
+            $sources = $preset['sources'] ?? [];
             foreach ($sources as $source) {
                 $model->makeMedia([
                     'src' => self::getFile($files, $source['crop']),
@@ -114,6 +117,7 @@ class StaticImage extends Model
 
         $cropData = $this->calcCrop($width, $height, $ratio);
 
+        /* @phpstan-ignore-next-line */
         $media = \A17\Twill\Models\Media::make([
             'uuid' => $uuid,
             'filename' => basename($uuid),
@@ -131,15 +135,16 @@ class StaticImage extends Model
             $this,
             $data,
             config('twill.mediables_table', 'twill_mediables'),
-            true,
+            true
         );
 
         $media->setRelation('pivot', $pivot);
 
+        /* @phpstan-ignore-next-line */
         $this->medias->add($media);
     }
 
-    private function getInputSize($uuid)
+    private function getInputSize($uuid): array
     {
         $file_path = implode('/', [
             rtrim(config('twill-image.static_local_path'), '/'),

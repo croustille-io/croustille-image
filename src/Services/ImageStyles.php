@@ -23,21 +23,21 @@ class ImageStyles
      * Set up the service to generate view inline styles for the wrapper, main image and placeholder elements
      *
      * @param array $styles
-     * @param array $classes
+     * @param string $classes
      * @return void
      */
-    public function setup($styles = [], $classes = '')
+    public function setup(array $styles = [], string $classes = '')
     {
         $this->mode = config('twill-image.mode');
         $this->setBaseStyling($styles, $classes);
     }
 
     /**
-     * Return inline stylesand classes for the wrapper element
+     * Return inline styles and classes for the wrapper element
      *
      * @return array
      */
-    public function wrapper()
+    public function wrapper(): array
     {
         $styles = $this->inlineStyles['wrapper'] ?? [];
         $classes = $this->classes['wrapper'] ?? [];
@@ -46,11 +46,11 @@ class ImageStyles
     }
 
     /**
-     * Return inline stylesand classes for the placeholder element
+     * Return inline styles and classes for the placeholder element
      *
      * @return array
      */
-    public function placeholder()
+    public function placeholder(): array
     {
         $styles = array_merge(
             $this->inlineStyles['main'] ?? [],
